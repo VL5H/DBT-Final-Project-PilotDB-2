@@ -1,0 +1,5 @@
+(11-09) 19:43:34 INFO     [execute.py:311] exact execution time: 23.69610333442688
+(11-09) 19:43:34 INFO     [execute.py:320] exact result:
+  l_shipmode  high_line_count  low_line_count
+0       MAIL            62071           93045
+1       SHIP            62426           93261

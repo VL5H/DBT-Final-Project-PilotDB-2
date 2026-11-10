@@ -1,0 +1,59 @@
+(11-09) 20:47:34 INFO     [query.py:21] start approximately processing query tpch-18 on postgres
+(11-09) 20:47:34 INFO     [query.py:22] original:
+select
+    c_name,
+    c_custkey,
+    o_orderkey,
+    o_orderdate,
+    o_totalprice,
+    sum(l_quantity)
+from
+    customer,
+    orders,
+    lineitem
+where
+    o_orderkey in (
+        select
+            l_orderkey
+        from
+            lineitem
+        group by
+            l_orderkey having
+                sum(l_quantity) > 300
+    )
+    and c_custkey = o_custkey
+    and o_orderkey = l_orderkey
+group by
+    c_name,
+    c_custkey,
+    o_orderkey,
+    o_orderdate,
+    o_totalprice
+order by
+    o_totalprice desc,
+    o_orderdate
+limit 100;
+
+(11-09) 20:47:34 INFO     [pilot.py:766] column mapping: [{'aggregate': 'sum', 'page_sum': 'r5'}]
+(11-09) 20:47:34 INFO     [pilot.py:767] group cols: ['r0', 'r1', 'r2', 'r3', 'r4']
+(11-09) 20:47:34 INFO     [pilot.py:768] subquery dict: {'subquery_0': 'SELECT l_orderkey FROM lineitem GROUP BY l_orderkey HAVING SUM(l_quantity) > 300'}
+(11-09) 20:47:34 INFO     [pilot.py:769] res2pageid: {}
+(11-09) 20:47:34 INFO     [pilot.py:770] subqueries in WHERE and HAVING: {'subquery_0': 'SELECT l_orderkey FROM lineitem GROUP BY l_orderkey HAVING SUM(l_quantity) > 300'}
+(11-09) 20:47:34 INFO     [pilot.py:771] limit value: 100
+Traceback (most recent call last):
+  File "C:\Users\rober\PilotDB\evaluate.py", line 71, in <module>
+    execute_aqp(query, db_config, args.pilot_sample_rate)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rober\PilotDB\pilotdb\execute.py", line 56, in execute_aqp
+    elif directly_run_exact(conn, query.query, pilot_query, dbms, pq.largest_table):
+         ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rober\PilotDB\pilotdb\db_driver\driver.py", line 81, in directly_run_exact
+    return postgres_utils.is_high_estimated_cost(conn, query, pilot_query)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rober\PilotDB\pilotdb\db_driver\postgres_utils.py", line 34, in is_high_estimated_cost
+    cur.execute(aqp_query)
+    ~~~~~~~~~~~^^^^^^^^^^^
+psycopg2.errors.SyntaxError: syntax error at or near "subquery_0"
+LINE 1: ...tem TABLESAMPLE SYSTEM (0.05) WHERE o_orderkey IN subquery_0...
+                                                             ^
+

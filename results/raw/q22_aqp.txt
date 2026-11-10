@@ -1,0 +1,61 @@
+(11-09) 20:48:38 INFO     [query.py:21] start approximately processing query tpch-22 on postgres
+(11-09) 20:48:38 INFO     [query.py:22] original:
+select
+        cntrycode,
+        count(*) as numcust,
+        sum(c_acctbal) as totacctbal
+from
+        (
+            select
+                substring(c_phone from 1 for 2) as cntrycode,
+                c_acctbal
+            from
+                customer
+            where
+                substring(c_phone from 1 for 2) in ('13', '31', '23', '29', '30', '18', '17')
+                and c_acctbal > (
+                    select
+                        avg(c_acctbal)
+                    from
+                        customer
+                    where
+                        c_acctbal > 0.00
+                        and substring(c_phone from 1 for 2) in ('13', '31', '23', '29', '30', '18', '17')
+                )
+                and not exists (
+                    select
+                        *
+                    from
+                        orders
+                    where
+                        o_custkey = c_custkey
+                )
+        ) as custsale
+group by
+        cntrycode
+order by
+        cntrycode;
+
+(11-09) 20:48:38 INFO     [pilot.py:766] column mapping: [{'aggregate': 'count', 'page_size': 'r1'}, {'aggregate': 'sum', 'page_sum': 'r2'}]
+(11-09) 20:48:38 INFO     [pilot.py:767] group cols: ['r0']
+(11-09) 20:48:38 INFO     [pilot.py:768] subquery dict: {'subquery_0': "SELECT AVG(c_acctbal) FROM customer WHERE c_acctbal > 0.00 AND SUBSTRING(c_phone, 1, 2) IN ('13', '31', '23', '29', '30', '18', '17')"}
+(11-09) 20:48:38 INFO     [pilot.py:769] res2pageid: {}
+(11-09) 20:48:38 INFO     [pilot.py:770] subqueries in WHERE and HAVING: {'subquery_0': "SELECT AVG(c_acctbal) FROM customer WHERE c_acctbal > 0.00 AND SUBSTRING(c_phone, 1, 2) IN ('13', '31', '23', '29', '30', '18', '17')"}
+(11-09) 20:48:38 INFO     [pilot.py:771] limit value: None
+Traceback (most recent call last):
+  File "C:\Users\rober\PilotDB\evaluate.py", line 71, in <module>
+    execute_aqp(query, db_config, args.pilot_sample_rate)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rober\PilotDB\pilotdb\execute.py", line 56, in execute_aqp
+    elif directly_run_exact(conn, query.query, pilot_query, dbms, pq.largest_table):
+         ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rober\PilotDB\pilotdb\db_driver\driver.py", line 81, in directly_run_exact
+    return postgres_utils.is_high_estimated_cost(conn, query, pilot_query)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rober\PilotDB\pilotdb\db_driver\postgres_utils.py", line 34, in is_high_estimated_cost
+    cur.execute(aqp_query)
+    ~~~~~~~~~~~^^^^^^^^^^^
+psycopg2.errors.UndefinedColumn: column "subquery_0" does not exist
+LINE 1: ...1', '23', '29', '30', '18', '17') AND c_acctbal > subquery_0...
+                                                             ^
+

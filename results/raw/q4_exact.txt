@@ -1,0 +1,8 @@
+(11-09) 19:36:06 INFO     [execute.py:311] exact execution time: 30.080488920211792
+(11-09) 19:36:06 INFO     [execute.py:320] exact result:
+   o_orderpriority  order_count
+0         1-URGENT       105214
+1           2-HIGH       104821
+2         3-MEDIUM       105227
+3  4-NOT SPECIFIED       105422
+4            5-LOW       105356

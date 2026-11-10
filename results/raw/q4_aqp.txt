@@ -1,0 +1,42 @@
+0.9963634024666783
+(11-09) 19:36:11 INFO     [query.py:21] start approximately processing query tpch-4 on postgres
+(11-09) 19:36:11 INFO     [query.py:22] original:
+select
+    o_orderpriority,
+    count(*) as order_count
+from
+    orders
+where
+    o_orderdate >= date '1993-07-01'
+    and o_orderdate < date '1993-07-01' + interval '3' month
+    and exists (
+        select
+            *
+        from
+            lineitem
+        where
+            l_orderkey = o_orderkey
+            and l_commitdate < l_receiptdate
+    )
+group by
+    o_orderpriority
+order by
+    o_orderpriority;
+
+(11-09) 19:36:11 INFO     [pilot.py:766] column mapping: [{'aggregate': 'count', 'page_size': 'r1'}]
+(11-09) 19:36:11 INFO     [pilot.py:767] group cols: ['r0']
+(11-09) 19:36:11 INFO     [pilot.py:768] subquery dict: {}
+(11-09) 19:36:11 INFO     [pilot.py:769] res2pageid: {}
+(11-09) 19:36:11 INFO     [pilot.py:770] subqueries in WHERE and HAVING: {}
+(11-09) 19:36:11 INFO     [pilot.py:771] limit value: None
+(11-09) 19:36:11 INFO     [execute.py:58] retrieving query plan time: 0.01798248291015625
+(11-09) 19:36:11 INFO     [execute.py:107] sampling query:
+SELECT o_orderpriority, COUNT(*) / 1 AS order_count FROM orders  WHERE o_orderdate >= CAST('1993-07-01' AS DATE) AND o_orderdate < CAST('1993-07-01' AS DATE) + INTERVAL '3' MONTH AND EXISTS(SELECT * FROM lineitem WHERE l_orderkey = o_orderkey AND l_commitdate < l_receiptdate) GROUP BY o_orderpriority ORDER BY o_orderpriority;
+(11-09) 19:36:40 INFO     [execute.py:109] sampling execution time: 28.320882320404053
+(11-09) 19:36:40 INFO     [execute.py:145] aqp result:
+   o_orderpriority  order_count
+0         1-URGENT       105214
+1           2-HIGH       104821
+2         3-MEDIUM       105227
+3  4-NOT SPECIFIED       105422
+4            5-LOW       105356

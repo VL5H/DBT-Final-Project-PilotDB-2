@@ -1,0 +1,98 @@
+0.042222527164426794
+(11-09) 20:48:04 INFO     [query.py:21] start approximately processing query tpch-19 on postgres
+(11-09) 20:48:04 INFO     [query.py:22] original:
+select
+    sum(l_extendedprice* (1 - l_discount)) as revenue
+from
+    lineitem,
+    part
+where
+    (
+        p_partkey = l_partkey
+        and p_brand = 'Brand#12'
+        and p_container in ('SM CASE', 'SM BOX', 'SM PACK', 'SM PKG')
+        and l_quantity >= 1 and l_quantity <= 1 + 10
+        and p_size between 1 and 5
+        and l_shipmode in ('AIR', 'AIR REG')
+        and l_shipinstruct = 'DELIVER IN PERSON'
+    )
+    or
+    (
+        p_partkey = l_partkey
+        and p_brand = 'Brand#23'
+        and p_container in ('MED BAG', 'MED BOX', 'MED PKG', 'MED PACK')
+        and l_quantity >= 10 and l_quantity <= 10 + 10
+        and p_size between 1 and 10
+        and l_shipmode in ('AIR', 'AIR REG')
+        and l_shipinstruct = 'DELIVER IN PERSON'
+    )
+    or
+    (
+        p_partkey = l_partkey
+        and p_brand = 'Brand#34'
+        and p_container in ('LG CASE', 'LG BOX', 'LG PACK', 'LG PKG')
+        and l_quantity >= 20 and l_quantity <= 20 + 10
+        and p_size between 1 and 15
+        and l_shipmode in ('AIR', 'AIR REG')
+        and l_shipinstruct = 'DELIVER IN PERSON'
+    );
+
+(11-09) 20:48:04 INFO     [pilot.py:766] column mapping: [{'aggregate': 'sum', 'page_sum': 'r0'}]
+(11-09) 20:48:04 INFO     [pilot.py:767] group cols: []
+(11-09) 20:48:04 INFO     [pilot.py:768] subquery dict: {}
+(11-09) 20:48:04 INFO     [pilot.py:769] res2pageid: {}
+(11-09) 20:48:04 INFO     [pilot.py:770] subqueries in WHERE and HAVING: {}
+(11-09) 20:48:04 INFO     [pilot.py:771] limit value: None
+(11-09) 20:48:04 INFO     [execute.py:69] pilot query:
+SELECT
+  SUM(l_extendedprice * (
+    1 - l_discount
+  )) AS r0,
+  'page_id_0:' || CAST((
+    CAST(CAST(lineitem.ctid AS TEXT) AS point)
+  )[0] AS INT) AS page_id_0
+FROM lineitem TABLESAMPLE SYSTEM (0.05), part
+WHERE
+  (
+    p_partkey = l_partkey
+    AND p_brand = 'Brand#12'
+    AND p_container IN ('SM CASE', 'SM BOX', 'SM PACK', 'SM PKG')
+    AND l_quantity >= 1
+    AND l_quantity <= 1 + 10
+    AND p_size BETWEEN 1 AND 5
+    AND l_shipmode IN ('AIR', 'AIR REG')
+    AND l_shipinstruct = 'DELIVER IN PERSON'
+  )
+  OR (
+    p_partkey = l_partkey
+    AND p_brand = 'Brand#23'
+    AND p_container IN ('MED BAG', 'MED BOX', 'MED PKG', 'MED PACK')
+    AND l_quantity >= 10
+    AND l_quantity <= 10 + 10
+    AND p_size BETWEEN 1 AND 10
+    AND l_shipmode IN ('AIR', 'AIR REG')
+    AND l_shipinstruct = 'DELIVER IN PERSON'
+  )
+  OR (
+    p_partkey = l_partkey
+    AND p_brand = 'Brand#34'
+    AND p_container IN ('LG CASE', 'LG BOX', 'LG PACK', 'LG PKG')
+    AND l_quantity >= 20
+    AND l_quantity <= 20 + 10
+    AND p_size BETWEEN 1 AND 15
+    AND l_shipmode IN ('AIR', 'AIR REG')
+    AND l_shipinstruct = 'DELIVER IN PERSON'
+  )
+GROUP BY
+  page_id_0
+(11-09) 20:48:05 INFO     [execute.py:74] pilot query executing time: 0.9840164184570312
+(11-09) 20:48:05 INFO     [execute.py:82] converted page errors: {'r0': 0.02469507659595993, 'n_page': 0.02469507659595993}
+(11-09) 20:48:05 INFO     [error_bounds.py:202] fail to estimate final sample rate due to nan is too big
+(11-09) 20:48:05 INFO     [execute.py:91] sample rate solving time: 0.022690534591674805
+(11-09) 20:48:05 INFO     [execute.py:97] fail to solve sample rate, fall back to original queries
+(11-09) 20:48:05 INFO     [execute.py:107] sampling query:
+SELECT SUM(l_extendedprice * (1 - l_discount)) / 1 AS revenue FROM lineitem , part WHERE (p_partkey = l_partkey AND p_brand = 'Brand#12' AND p_container IN ('SM CASE', 'SM BOX', 'SM PACK', 'SM PKG') AND l_quantity >= 1 AND l_quantity <= 1 + 10 AND p_size BETWEEN 1 AND 5 AND l_shipmode IN ('AIR', 'AIR REG') AND l_shipinstruct = 'DELIVER IN PERSON') OR (p_partkey = l_partkey AND p_brand = 'Brand#23' AND p_container IN ('MED BAG', 'MED BOX', 'MED PKG', 'MED PACK') AND l_quantity >= 10 AND l_quantity <= 10 + 10 AND p_size BETWEEN 1 AND 10 AND l_shipmode IN ('AIR', 'AIR REG') AND l_shipinstruct = 'DELIVER IN PERSON') OR (p_partkey = l_partkey AND p_brand = 'Brand#34' AND p_container IN ('LG CASE', 'LG BOX', 'LG PACK', 'LG PKG') AND l_quantity >= 20 AND l_quantity <= 20 + 10 AND p_size BETWEEN 1 AND 15 AND l_shipmode IN ('AIR', 'AIR REG') AND l_shipinstruct = 'DELIVER IN PERSON');
+(11-09) 20:48:19 INFO     [execute.py:109] sampling execution time: 13.916476726531982
+(11-09) 20:48:19 INFO     [execute.py:145] aqp result:
+        revenue
+0  3.010444e+07

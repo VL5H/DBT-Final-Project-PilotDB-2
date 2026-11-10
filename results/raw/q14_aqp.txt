@@ -1,0 +1,58 @@
+0.03617845090213625
+(11-09) 19:44:30 INFO     [query.py:21] start approximately processing query tpch-14 on postgres
+(11-09) 19:44:30 INFO     [query.py:22] original:
+select
+    100.00 * sum(case
+        when p_type like 'PROMO%'
+            then l_extendedprice * (1 - l_discount)
+        else 0
+    end) / sum(l_extendedprice * (1 - l_discount)) as promo_revenue
+from
+    lineitem,
+    part
+where
+    l_partkey = p_partkey
+    and l_shipdate >= date '1995-09-01'
+    and l_shipdate < date '1995-09-01' + interval '1' month;
+
+(11-09) 19:44:30 INFO     [pilot.py:766] column mapping: [{'aggregate': 'div', 'first_element': 'r0', 'second_element': 'r1'}]
+(11-09) 19:44:30 INFO     [pilot.py:767] group cols: []
+(11-09) 19:44:30 INFO     [pilot.py:768] subquery dict: {}
+(11-09) 19:44:30 INFO     [pilot.py:769] res2pageid: {}
+(11-09) 19:44:30 INFO     [pilot.py:770] subqueries in WHERE and HAVING: {}
+(11-09) 19:44:30 INFO     [pilot.py:771] limit value: None
+(11-09) 19:44:30 INFO     [execute.py:69] pilot query:
+SELECT
+  100.00 * SUM(
+    CASE
+      WHEN p_type LIKE 'PROMO%'
+      THEN l_extendedprice * (
+        1 - l_discount
+      )
+      ELSE 0
+    END
+  ) AS r0,
+  SUM(l_extendedprice * (
+    1 - l_discount
+  )) AS r1,
+  'page_id_0:' || CAST((
+    CAST(CAST(lineitem.ctid AS TEXT) AS point)
+  )[0] AS INT) AS page_id_0
+FROM lineitem TABLESAMPLE SYSTEM (0.05), part
+WHERE
+  l_partkey = p_partkey
+  AND l_shipdate >= CAST('1995-09-01' AS DATE)
+  AND l_shipdate < CAST('1995-09-01' AS DATE) + INTERVAL '1 MONTH'
+GROUP BY
+  page_id_0
+(11-09) 19:44:31 INFO     [execute.py:74] pilot query executing time: 0.7668118476867676
+(11-09) 19:44:31 INFO     [execute.py:82] converted page errors: {'r0': 0.01273936708366663, 'r1': 0.01273936708366663}
+(11-09) 19:44:31 INFO     [error_bounds.py:202] fail to estimate final sample rate due to 747590.8772397379 is too big
+(11-09) 19:44:31 INFO     [execute.py:91] sample rate solving time: 0.02804732322692871
+(11-09) 19:44:31 INFO     [execute.py:97] fail to solve sample rate, fall back to original queries
+(11-09) 19:44:31 INFO     [execute.py:107] sampling query:
+SELECT 100.00 * SUM(CASE WHEN p_type LIKE 'PROMO%' THEN l_extendedprice * (1 - l_discount) ELSE 0 END) / SUM(l_extendedprice * (1 - l_discount)) AS promo_revenue FROM lineitem , part WHERE l_partkey = p_partkey AND l_shipdate >= CAST('1995-09-01' AS DATE) AND l_shipdate < CAST('1995-09-01' AS DATE) + INTERVAL '1' MONTH;
+(11-09) 19:44:47 INFO     [execute.py:109] sampling execution time: 16.51121735572815
+(11-09) 19:44:47 INFO     [execute.py:145] aqp result:
+   promo_revenue
+0      16.647595

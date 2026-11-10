@@ -1,0 +1,7 @@
+(11-09) 19:38:49 INFO     [execute.py:311] exact execution time: 18.549542665481567
+(11-09) 19:38:49 INFO     [execute.py:320] exact result:
+  supp_nation cust_nation  l_year       revenue
+0      FRANCE     GERMANY  1995.0  5.219601e+08
+1      FRANCE     GERMANY  1996.0  5.247961e+08
+2     GERMANY      FRANCE  1995.0  5.421997e+08
+3     GERMANY      FRANCE  1996.0  5.336409e+08

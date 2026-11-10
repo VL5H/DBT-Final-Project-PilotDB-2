@@ -1,0 +1,8 @@
+(11-09) 19:37:18 INFO     [execute.py:311] exact execution time: 33.21350431442261
+(11-09) 19:37:18 INFO     [execute.py:320] exact result:
+      n_name       revenue
+0      INDIA  5.368626e+08
+1      CHINA  5.353508e+08
+2    VIETNAM  5.322694e+08
+3      JAPAN  5.267668e+08
+4  INDONESIA  5.231769e+08

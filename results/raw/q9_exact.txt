@@ -1,0 +1,16 @@
+(11-09) 19:41:02 INFO     [execute.py:311] exact execution time: 55.1773624420166
+(11-09) 19:41:02 INFO     [execute.py:320] exact result:
+      nation  o_year    sum_profit
+0    ALGERIA  1998.0  2.715040e+08
+1    ALGERIA  1997.0  4.570360e+08
+2    ALGERIA  1996.0  4.571252e+08
+3    ALGERIA  1995.0  4.609725e+08
+4    ALGERIA  1994.0  4.564450e+08
+..       ...     ...           ...
+170  VIETNAM  1996.0  4.660488e+08
+171  VIETNAM  1995.0  4.686582e+08
+172  VIETNAM  1994.0  4.780196e+08
+173  VIETNAM  1993.0  4.692719e+08
+174  VIETNAM  1992.0  4.639629e+08
+
+[175 rows x 3 columns]

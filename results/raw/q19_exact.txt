@@ -1,0 +1,4 @@
+(11-09) 20:47:56 INFO     [execute.py:311] exact execution time: 14.373161554336548
+(11-09) 20:47:56 INFO     [execute.py:320] exact result:
+        revenue
+0  3.010444e+07

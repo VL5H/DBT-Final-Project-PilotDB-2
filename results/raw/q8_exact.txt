@@ -1,0 +1,5 @@
+(11-09) 19:39:37 INFO     [execute.py:311] exact execution time: 18.9691641330719
+(11-09) 19:39:37 INFO     [execute.py:320] exact result:
+   o_year  mkt_share
+0  1995.0    0.03882
+1  1996.0    0.03949

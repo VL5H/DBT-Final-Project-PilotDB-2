@@ -1,0 +1,43 @@
+0.0017282818551145008
+(11-09) 19:38:21 INFO     [query.py:21] start approximately processing query tpch-6 on postgres
+(11-09) 19:38:21 INFO     [query.py:22] original:
+select
+    sum(l_extendedprice * l_discount) as revenue
+from
+    lineitem
+where
+    l_shipdate >= date '1994-01-01'
+    and l_shipdate < date '1994-01-01' + interval '1' year
+    and l_discount between 0.06 - 0.01 and 0.06 + 0.01
+    and l_quantity < 24;
+
+(11-09) 19:38:21 INFO     [pilot.py:766] column mapping: [{'aggregate': 'sum', 'page_sum': 'r0'}]
+(11-09) 19:38:21 INFO     [pilot.py:767] group cols: []
+(11-09) 19:38:21 INFO     [pilot.py:768] subquery dict: {}
+(11-09) 19:38:21 INFO     [pilot.py:769] res2pageid: {}
+(11-09) 19:38:21 INFO     [pilot.py:770] subqueries in WHERE and HAVING: {}
+(11-09) 19:38:21 INFO     [pilot.py:771] limit value: None
+(11-09) 19:38:21 INFO     [execute.py:69] pilot query:
+SELECT
+  SUM(l_extendedprice * l_discount) AS r0,
+  'page_id_0:' || CAST((
+    CAST(CAST(lineitem.ctid AS TEXT) AS point)
+  )[0] AS INT) AS page_id_0
+FROM lineitem TABLESAMPLE SYSTEM (0.05)
+WHERE
+  l_shipdate >= CAST('1994-01-01' AS DATE)
+  AND l_shipdate < CAST('1994-01-01' AS DATE) + INTERVAL '1 YEAR'
+  AND l_discount BETWEEN 0.06 - 0.01 AND 0.06 + 0.01
+  AND l_quantity < 24
+GROUP BY
+  page_id_0
+(11-09) 19:38:21 INFO     [execute.py:74] pilot query executing time: 0.2267460823059082
+(11-09) 19:38:21 INFO     [execute.py:82] converted page errors: {'r0': 0.02469507659595993, 'n_page': 0.02469507659595993}
+(11-09) 19:38:21 INFO     [execute.py:91] sample rate solving time: 0.021363258361816406
+(11-09) 19:38:21 INFO     [execute.py:114] final sample rate: 2.08
+(11-09) 19:38:21 INFO     [execute.py:121] sampling query:
+SELECT SUM(l_extendedprice * l_discount) / 0.0208 AS revenue FROM lineitem TABLESAMPLE SYSTEM (2.08) WHERE l_shipdate >= CAST('1994-01-01' AS DATE) AND l_shipdate < CAST('1994-01-01' AS DATE) + INTERVAL '1' YEAR AND l_discount BETWEEN 0.06 - 0.01 AND 0.06 + 0.01 AND l_quantity < 24;
+(11-09) 19:38:25 INFO     [execute.py:123] sampling execution time: 3.9797775745391846
+(11-09) 19:38:25 INFO     [execute.py:145] aqp result:
+        revenue
+0  1.228061e+09

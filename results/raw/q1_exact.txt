@@ -1,0 +1,9 @@
+(11-09) 19:33:46 INFO     [execute.py:311] exact execution time: 43.76670002937317
+(11-09) 19:33:46 INFO     [execute.py:320] exact result:
+  l_returnflag l_linestatus      sum_qty  ...     avg_price  avg_disc  count_order
+0            A            F  377518399.0  ...  38237.151009  0.050007     14804077
+1            N            F    9851614.0  ...  38257.810660  0.049973       385998
+2            N            O  743124873.0  ...  38233.902923  0.050001     29144351
+3            R            F  377732830.0  ...  38251.219274  0.049997     14808183
+
+[4 rows x 10 columns]

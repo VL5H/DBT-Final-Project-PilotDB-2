@@ -1,0 +1,4 @@
+(11-09) 19:44:24 INFO     [execute.py:311] exact execution time: 16.38084053993225
+(11-09) 19:44:24 INFO     [execute.py:320] exact result:
+   promo_revenue
+0      16.647595
