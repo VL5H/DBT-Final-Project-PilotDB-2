@@ -1,0 +1,62 @@
+0.30474959341937397
+(11-09) 23:16:53 INFO     [query.py:21] start approximately processing query tpch-9 on postgres
+(11-09) 23:16:53 INFO     [query.py:22] original:
+select
+    nation,
+    o_year,
+    sum(amount) as sum_profit
+from
+    (
+        select
+            n_name as nation,
+            extract(year from o_orderdate) as o_year,
+            l_extendedprice * (1 - l_discount) - ps_supplycost * l_quantity as amount
+        from
+            part,
+            supplier,
+            lineitem,
+            partsupp,
+            orders,
+            nation
+        where
+            s_suppkey = l_suppkey
+            and ps_suppkey = l_suppkey
+            and ps_partkey = l_partkey
+            and p_partkey = l_partkey
+            and o_orderkey = l_orderkey
+            and s_nationkey = n_nationkey
+            and p_name like '%green%'
+    ) as profit
+group by
+    nation,
+    o_year
+order by
+    nation,
+    o_year desc;
+
+(11-09) 23:16:53 INFO     [pilot.py:766] column mapping: [{'aggregate': 'sum', 'page_sum': 'r2'}]
+(11-09) 23:16:53 INFO     [pilot.py:767] group cols: ['r0', 'r1']
+(11-09) 23:16:53 INFO     [pilot.py:768] subquery dict: {}
+(11-09) 23:16:53 INFO     [pilot.py:769] res2pageid: {}
+(11-09) 23:16:53 INFO     [pilot.py:770] subqueries in WHERE and HAVING: {}
+(11-09) 23:16:53 INFO     [pilot.py:771] limit value: None
+(11-09) 23:16:53 INFO     [execute.py:62] subquery execution time: 0.002500772476196289
+(11-09) 23:16:53 INFO     [execute.py:69] retrieving query plan time: 0.015865564346313477
+(11-09) 23:16:53 INFO     [execute.py:110] sampling query:
+SELECT nation, o_year, SUM(amount) / 1 AS sum_profit FROM (SELECT n_name AS nation, EXTRACT(YEAR FROM o_orderdate) AS o_year, l_extendedprice * (1 - l_discount) - ps_supplycost * l_quantity AS amount FROM part, supplier, lineitem , partsupp, orders, nation WHERE s_suppkey = l_suppkey AND ps_suppkey = l_suppkey AND ps_partkey = l_partkey AND p_partkey = l_partkey AND o_orderkey = l_orderkey AND s_nationkey = n_nationkey AND p_name LIKE '%green%') AS profit GROUP BY nation, o_year ORDER BY nation, o_year DESC;
+(11-09) 23:17:37 INFO     [execute.py:112] sampling execution time: 43.86382293701172
+(11-09) 23:17:37 INFO     [execute.py:148] aqp result:
+      nation  o_year    sum_profit
+0    ALGERIA  1998.0  2.715040e+08
+1    ALGERIA  1997.0  4.570360e+08
+2    ALGERIA  1996.0  4.571252e+08
+3    ALGERIA  1995.0  4.609725e+08
+4    ALGERIA  1994.0  4.564450e+08
+..       ...     ...           ...
+170  VIETNAM  1996.0  4.660488e+08
+171  VIETNAM  1995.0  4.686582e+08
+172  VIETNAM  1994.0  4.780196e+08
+173  VIETNAM  1993.0  4.692719e+08
+174  VIETNAM  1992.0  4.639629e+08
+
+[175 rows x 3 columns]

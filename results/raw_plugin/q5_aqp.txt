@@ -1,0 +1,46 @@
+0.23093499090060865
+(11-09) 23:15:40 INFO     [query.py:21] start approximately processing query tpch-5 on postgres
+(11-09) 23:15:40 INFO     [query.py:22] original:
+select
+    n_name,
+    sum(l_extendedprice * (1 - l_discount)) as revenue
+from
+    customer,
+    orders,
+    lineitem,
+    supplier,
+    nation,
+    region
+where
+    c_custkey = o_custkey
+    and l_orderkey = o_orderkey
+    and l_suppkey = s_suppkey
+    and c_nationkey = s_nationkey
+    and s_nationkey = n_nationkey
+    and n_regionkey = r_regionkey
+    and r_name = 'ASIA'
+    and o_orderdate >= date '1994-01-01'
+    and o_orderdate < date '1994-01-01' + interval '1' year
+group by
+    n_name
+order by
+    revenue desc;
+
+(11-09) 23:15:40 INFO     [pilot.py:766] column mapping: [{'aggregate': 'sum', 'page_sum': 'r1'}]
+(11-09) 23:15:40 INFO     [pilot.py:767] group cols: ['r0']
+(11-09) 23:15:40 INFO     [pilot.py:768] subquery dict: {}
+(11-09) 23:15:40 INFO     [pilot.py:769] res2pageid: {}
+(11-09) 23:15:40 INFO     [pilot.py:770] subqueries in WHERE and HAVING: {}
+(11-09) 23:15:40 INFO     [pilot.py:771] limit value: None
+(11-09) 23:15:40 INFO     [execute.py:62] subquery execution time: 0.0031418800354003906
+(11-09) 23:15:40 INFO     [execute.py:69] retrieving query plan time: 0.028980255126953125
+(11-09) 23:15:40 INFO     [execute.py:110] sampling query:
+SELECT n_name, SUM(l_extendedprice * (1 - l_discount)) / 1 AS revenue FROM customer, orders, lineitem , supplier, nation, region WHERE c_custkey = o_custkey AND l_orderkey = o_orderkey AND l_suppkey = s_suppkey AND c_nationkey = s_nationkey AND s_nationkey = n_nationkey AND n_regionkey = r_regionkey AND r_name = 'ASIA' AND o_orderdate >= CAST('1994-01-01' AS DATE) AND o_orderdate < CAST('1994-01-01' AS DATE) + INTERVAL '1' YEAR GROUP BY n_name ORDER BY revenue DESC;
+(11-09) 23:16:08 INFO     [execute.py:112] sampling execution time: 28.31317114830017
+(11-09) 23:16:08 INFO     [execute.py:148] aqp result:
+      n_name       revenue
+0      INDIA  5.368626e+08
+1      CHINA  5.353508e+08
+2    VIETNAM  5.322694e+08
+3      JAPAN  5.267668e+08
+4  INDONESIA  5.231769e+08

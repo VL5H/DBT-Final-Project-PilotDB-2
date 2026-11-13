@@ -1,0 +1,50 @@
+0.15213841054450522
+(11-09) 23:14:50 INFO     [query.py:21] start approximately processing query tpch-3 on postgres
+(11-09) 23:14:50 INFO     [query.py:22] original:
+select
+    l_orderkey,
+    sum(l_extendedprice * (1 - l_discount)) as revenue,
+    o_orderdate,
+    o_shippriority
+from
+    customer,
+    orders,
+    lineitem
+where
+    c_mktsegment = 'BUILDING'
+    and c_custkey = o_custkey
+    and l_orderkey = o_orderkey
+    and o_orderdate < date '1995-03-15'
+    and l_shipdate > date '1995-03-15'
+group by
+    l_orderkey,
+    o_orderdate,
+    o_shippriority
+order by
+    revenue desc,
+    o_orderdate
+limit 10;
+
+(11-09) 23:14:50 INFO     [pilot.py:766] column mapping: [{'aggregate': 'sum', 'page_sum': 'r1'}]
+(11-09) 23:14:50 INFO     [pilot.py:767] group cols: ['r0', 'r2', 'r3']
+(11-09) 23:14:50 INFO     [pilot.py:768] subquery dict: {}
+(11-09) 23:14:50 INFO     [pilot.py:769] res2pageid: {}
+(11-09) 23:14:50 INFO     [pilot.py:770] subqueries in WHERE and HAVING: {}
+(11-09) 23:14:50 INFO     [pilot.py:771] limit value: 10
+(11-09) 23:14:50 INFO     [execute.py:62] subquery execution time: 0.0031299591064453125
+(11-09) 23:14:50 INFO     [execute.py:69] retrieving query plan time: 0.019666194915771484
+(11-09) 23:14:50 INFO     [execute.py:110] sampling query:
+SELECT l_orderkey, SUM(l_extendedprice * (1 - l_discount)) / 1 AS revenue, o_orderdate, o_shippriority FROM customer, orders, lineitem  WHERE c_mktsegment = 'BUILDING' AND c_custkey = o_custkey AND l_orderkey = o_orderkey AND o_orderdate < CAST('1995-03-15' AS DATE) AND l_shipdate > CAST('1995-03-15' AS DATE) GROUP BY l_orderkey, o_orderdate, o_shippriority ORDER BY revenue DESC, o_orderdate LIMIT 10;
+(11-09) 23:15:07 INFO     [execute.py:112] sampling execution time: 17.098066091537476
+(11-09) 23:15:07 INFO     [execute.py:148] aqp result:
+   l_orderkey      revenue o_orderdate  o_shippriority
+0     4791171  440715.2185  1995-02-23               0
+1    46678469  439855.3250  1995-01-27               0
+2    23906758  432728.5737  1995-03-14               0
+3    23861382  428739.1368  1995-03-09               0
+4    59393639  426036.0662  1995-02-12               0
+5     3355202  425100.6657  1995-03-04               0
+6     9806272  425088.0568  1995-03-13               0
+7    22810436  423231.9690  1995-01-02               0
+8    16384100  421478.7294  1995-03-02               0
+9    52974151  415367.1195  1995-02-05               0

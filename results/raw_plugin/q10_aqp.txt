@@ -1,0 +1,71 @@
+0.1578674809442655
+(11-09) 23:17:41 INFO     [query.py:21] start approximately processing query tpch-10 on postgres
+(11-09) 23:17:41 INFO     [query.py:22] original:
+select
+    c_custkey,
+    c_name,
+    sum(l_extendedprice * (1 - l_discount)) as revenue,
+    c_acctbal,
+    n_name,
+    c_address,
+    c_phone,
+    c_comment
+from
+    customer,
+    orders,
+    lineitem,
+    nation
+where
+    c_custkey = o_custkey
+    and l_orderkey = o_orderkey
+    and o_orderdate >= date '1994-08-01'
+    and o_orderdate < date '1994-08-01' + interval '3' month
+    and l_returnflag = 'R'
+    and c_nationkey = n_nationkey
+group by
+    c_custkey,
+    c_name,
+    c_acctbal,
+    c_phone,
+    n_name,
+    c_address,
+    c_comment
+order by
+    revenue desc
+limit 20;
+
+(11-09) 23:17:41 INFO     [pilot.py:766] column mapping: [{'aggregate': 'sum', 'page_sum': 'r2'}]
+(11-09) 23:17:41 INFO     [pilot.py:767] group cols: ['r0', 'r1', 'r3', 'r4', 'r5', 'r6', 'r7']
+(11-09) 23:17:41 INFO     [pilot.py:768] subquery dict: {}
+(11-09) 23:17:41 INFO     [pilot.py:769] res2pageid: {}
+(11-09) 23:17:41 INFO     [pilot.py:770] subqueries in WHERE and HAVING: {}
+(11-09) 23:17:41 INFO     [pilot.py:771] limit value: 20
+(11-09) 23:17:41 INFO     [execute.py:62] subquery execution time: 0.002964496612548828
+(11-09) 23:17:41 INFO     [execute.py:69] retrieving query plan time: 0.0157928466796875
+(11-09) 23:17:41 INFO     [execute.py:110] sampling query:
+SELECT c_custkey, c_name, SUM(l_extendedprice * (1 - l_discount)) / 1 AS revenue, c_acctbal, n_name, c_address, c_phone, c_comment FROM customer, orders, lineitem , nation WHERE c_custkey = o_custkey AND l_orderkey = o_orderkey AND o_orderdate >= CAST('1994-08-01' AS DATE) AND o_orderdate < CAST('1994-08-01' AS DATE) + INTERVAL '3' MONTH AND l_returnflag = 'R' AND c_nationkey = n_nationkey GROUP BY c_custkey, c_name, c_acctbal, c_phone, n_name, c_address, c_comment ORDER BY revenue DESC LIMIT 20;
+(11-09) 23:18:02 INFO     [execute.py:112] sampling execution time: 21.83096194267273
+(11-09) 23:18:02 INFO     [execute.py:148] aqp result:
+    c_custkey  ...                                          c_comment
+0      116288  ...  onic accounts dazzle blithely. unusual, ironic...
+1      642304  ...  es are blithely according to the furiously reg...
+2      814586  ...  quickly special requests. regular deposits nag...
+3      570628  ...  uffily unusual packages haggle closely ideas. ...
+4      782215  ...   haggle blithely ironic ideas. ironic platelet...
+5      920923  ...  carefully ironic packages nag furiously. blith...
+6     1273429  ...   pending accounts believe about the regular de...
+7      798316  ...  lar instructions affix carefully slyly special...
+8      891799  ...  l decoys affix fluffily across the final packa...
+9     1282804  ...  ong the unusual accounts. carefully unusual de...
+10     230008  ...  sual epitaphs. furiously unusual requests hagg...
+11    1124779  ...  st boldly final packages. ironic deposits will...
+12    1306174  ...                   ecial, slow pinto beans. furious
+13     936856  ...  d excuses boost bold foxes. slyly ironic packa...
+14     193591  ...  o beans. regular packages are blithely furious...
+15     945115  ...  osits. unusual accounts wake slyly past the sl...
+16     363733  ...                    rmanent instructions haggle car
+17     319225  ...          heodolites mold furiously along the bold,
+18      47149  ...  ses sleep carefully quickly express dolphins. ...
+19    1487611  ...   wake regular escapades. carefully ironic asym...
+
+[20 rows x 8 columns]
