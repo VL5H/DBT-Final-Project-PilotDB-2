@@ -29,6 +29,12 @@ def dump_results(result_file: str, results_df: pd.DataFrame):
 
 
 def get_largest_sample_rate(dbms: str) -> float:
+    # Fix: the published hardcoded ceiling (5% for Postgres) silently rejects
+    # feasible plans, e.g. TPC-H Q1 at SF10 needs 6.6% under measurement-based
+    # bounds. Overridable for experiments via env var PILOTDB_MAX_RATE.
+    override = os.environ.get("PILOTDB_MAX_RATE")
+    if override is not None:
+        return float(override)
     if dbms == POSTGRES:
         return 5
     elif dbms == DUCKDB:

@@ -49,22 +49,25 @@ def execute_aqp(query: Query, db_config: dict, pilot_sample_rate: float = 0.05):
     setup_logging(log_file=get_log_file_path("logs", query.name, job_id))
     log_query_info(query, dbms)
     pq.log_info()
+    # Fix: execute WHERE-clause subqueries and substitute their results into the
+    # pilot query BEFORE the cost gate inspects it. Previously the gate received
+    # the un-substituted placeholder (e.g. "o_orderkey IN subquery_0"), which is
+    # invalid SQL and crashed every query with a subquery in WHERE (TPC-H Q18, Q22).
+    if dbms == DUCKDB and not pq.is_rewritable:
+        subquery_results = {}
+    else:
+        subquery_results = process_subqueries(dbms, conn, pq)
+        for subquery_name, subquery_result in subquery_results.items():
+            pilot_query = pilot_query.replace(subquery_name, subquery_result)
+        logging.info(f"subquery execution time: {timer.check('subquery_execution')}")
+
     if dbms == DUCKDB and not pq.is_rewritable:
         final_sample_rate = 1
         sampling_query = query.query
-        subquery_results = {}
     elif directly_run_exact(conn, query.query, pilot_query, dbms, pq.largest_table):
         final_sample_rate = 1
         logging.info(f"retrieving query plan time: {timer.check('query_plan_time')}")
-        subquery_results = {}
     else:
-        # execute subqueries
-        subquery_results = process_subqueries(dbms, conn, pq)
-
-        # execute pilot query
-        for subquery_name, subquery_result in subquery_results.items():
-            pilot_query = pilot_query.replace(subquery_name, subquery_result)
-
         if dbms != SQLSERVER:
             logging.info(
                 f"pilot query:\n{transpile(pilot_query, read=dbms, pretty=True)[0]}"
