@@ -1,6 +1,7 @@
 import subprocess, sys, time, csv, re, os
 
-QIDS = ["1","3","4","5","6","7","8","9","10","12","14","17","18","19","22"]
+# QIDS = ["1","3","4","5","6","7","8","9","10","12","14","17","18","19","22"]
+QIDS = ["17"]
 CONFIG = "db_configs/postgres_tpch10.yml"
 ERROR, PROB = "0.05", "0.05"
 TIMEOUT = 1800  # 30 min cap per run

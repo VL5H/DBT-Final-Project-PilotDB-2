@@ -74,6 +74,8 @@ def execute_aqp(query: Query, db_config: dict, pilot_sample_rate: float = 0.05):
             )
 
         pilot_results = execute_query(conn, pilot_query, dbms)
+        if len(pilot_results) == 0:
+            logging.warning("pilot query result set empty!")
         logging.info(
             f"pilot query executing time: {timer.check('pilot_query_execution')}"
         )

@@ -1,6 +1,6 @@
 import subprocess, sys, time, csv, re, os
 
-QIDS = ["1","3","4","5","6","7","8","9","10","12","14","17","18","19","22"]
+QIDS = ["17"]
 # Plugin-bounds A/B run: aqp only (exact baselines live in benchmark_sf10.csv),
 # measurement-based bounds + raised rate cap via environment.
 ENV = dict(os.environ, PILOTDB_BOUNDS="plugin", PILOTDB_MAX_RATE="20")
@@ -12,7 +12,7 @@ os.makedirs("results/raw_plugin", exist_ok=True)
 rows = []
 
 for qid in QIDS:
-    for mode in ["aqp"]:
+    for mode in ["exact", "aqp"]:
         cmd = [sys.executable, "evaluate.py", "--benchmark", "tpch", "--qid", qid,
                "--dbms", "postgres", "--db_config_file", CONFIG,
                "--process_mode", mode, "--error", ERROR, "--failure_probability", PROB]

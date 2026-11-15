@@ -20,7 +20,7 @@ if __name__ == "__main__":
         description="Evaluate PilotDB on a benchmark query"
     )
     parser.add_argument("--benchmark", type=str, default="tpch", help="benchmark name")
-    parser.add_argument("--qid", type=str, default="1", help="query id")
+    parser.add_argument("--qid", type=str, default="17", help="query id")
     parser.add_argument(
         "--pilot_sample_rate", type=float, default=0.05, help="pilot sample rate"
     )
@@ -28,7 +28,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--db_config_file",
         type=str,
-        default="db_configs/postgres_tpch.yml",
+        default="db_configs/postgres_tpch10.yml",
         help="db config file",
     )
     parser.add_argument("--process_mode", type=str, default="aqp", help="query mode")
@@ -39,7 +39,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--sample_rate",
         type=float,
-        default=0.05,
+        default=0.25,
         help="sample rate of the largest table (valid only in 'sample' process mode)",
     )
 

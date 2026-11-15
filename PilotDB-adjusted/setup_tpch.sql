@@ -10,14 +10,14 @@ CREATE TABLE partsupp (ps_partkey INT, ps_suppkey INT, ps_availqty INT, ps_suppl
 CREATE TABLE orders (o_orderkey INT, o_custkey INT, o_orderstatus VARCHAR, o_totalprice DECIMAL(15,2), o_orderdate DATE, o_orderpriority VARCHAR, o_clerk VARCHAR, o_shippriority INT, o_comment VARCHAR);
 CREATE TABLE lineitem (l_orderkey INT, l_partkey INT, l_suppkey INT, l_linenumber INT, l_quantity DECIMAL(15,2), l_extendedprice DECIMAL(15,2), l_discount DECIMAL(15,2), l_tax DECIMAL(15,2), l_returnflag VARCHAR, l_linestatus VARCHAR, l_shipdate DATE, l_commitdate DATE, l_receiptdate DATE, l_shipinstruct VARCHAR, l_shipmode VARCHAR, l_comment VARCHAR);
 
--- Load (psql only). CHANGE the path to wherever your CSVs are:
-\copy region FROM 'C:/Users/YOURNAME/region.csv' WITH (FORMAT csv, HEADER true)
-\copy nation FROM 'C:/Users/YOURNAME/nation.csv' WITH (FORMAT csv, HEADER true)
-\copy supplier FROM 'C:/Users/YOURNAME/supplier.csv' WITH (FORMAT csv, HEADER true)
-\copy customer FROM 'C:/Users/YOURNAME/customer.csv' WITH (FORMAT csv, HEADER true)
-\copy part FROM 'C:/Users/YOURNAME/part.csv' WITH (FORMAT csv, HEADER true)
-\copy partsupp FROM 'C:/Users/YOURNAME/partsupp.csv' WITH (FORMAT csv, HEADER true)
-\copy orders FROM 'C:/Users/YOURNAME/orders.csv' WITH (FORMAT csv, HEADER true)
-\copy lineitem FROM 'C:/Users/YOURNAME/lineitem.csv' WITH (FORMAT csv, HEADER true)
+-- Load (psql only). CHANGE the path to wherever your csvs are:
+\copy region FROM '/home/nina/Projects/DBT-Final-Project-PilotDB-2/tpch-data/region.tbl' WITH (FORMAT csv, HEADER true, DELIMITER '|')
+\copy nation FROM '/home/nina/Projects/DBT-Final-Project-PilotDB-2/tpch-data/nation.tbl' WITH (FORMAT csv, HEADER true, DELIMITER '|')
+\copy supplier FROM '/home/nina/Projects/DBT-Final-Project-PilotDB-2/tpch-data/supplier.tbl' WITH (FORMAT csv, HEADER true, DELIMITER '|')
+\copy customer FROM '/home/nina/Projects/DBT-Final-Project-PilotDB-2/tpch-data/customer.tbl' WITH (FORMAT csv, HEADER true, DELIMITER '|')
+\copy part FROM '/home/nina/Projects/DBT-Final-Project-PilotDB-2/tpch-data/part.tbl' WITH (FORMAT csv, HEADER true, DELIMITER '|')
+\copy partsupp FROM '/home/nina/Projects/DBT-Final-Project-PilotDB-2/tpch-data/partsupp.tbl' WITH (FORMAT csv, HEADER true, DELIMITER '|')
+\copy orders FROM '/home/nina/Projects/DBT-Final-Project-PilotDB-2/tpch-data/orders.tbl' WITH (FORMAT csv, HEADER true, DELIMITER '|')
+\copy lineitem FROM '/home/nina/Projects/DBT-Final-Project-PilotDB-2/tpch-data/lineitem.tbl' WITH (FORMAT csv, HEADER true, DELIMITER '|')
 
 -- Verify: SELECT count(*) FROM lineitem;  -- should be 6001215 at SF1
