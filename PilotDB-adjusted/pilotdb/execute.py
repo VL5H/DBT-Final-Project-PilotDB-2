@@ -49,10 +49,9 @@ def execute_aqp(query: Query, db_config: dict, pilot_sample_rate: float = 0.05):
     setup_logging(log_file=get_log_file_path("logs", query.name, job_id))
     log_query_info(query, dbms)
     pq.log_info()
-    # Fix: execute WHERE-clause subqueries and substitute their results into the
-    # pilot query BEFORE the cost gate inspects it. Previously the gate received
-    # the un-substituted placeholder (e.g. "o_orderkey IN subquery_0"), which is
-    # invalid SQL and crashed every query with a subquery in WHERE (TPC-H Q18, Q22).
+    # Our Fix: execute WHERE-clause subqueries and substitute their results into the pilot query BEFORE the cost gate inspects it. 
+    # Previously the gate received the un-substituted placeholder (e.g. "o_orderkey IN subquery_0"). 
+    # This is not valid syntax and causes every query with a subquery in the WHERE key-word (i.e. TPC-H Q18, Q22) to crash.
     if dbms == DUCKDB and not pq.is_rewritable:
         subquery_results = {}
     else:

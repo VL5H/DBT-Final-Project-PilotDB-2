@@ -3,10 +3,7 @@ import math
 import os
 from typing import Dict, List
 
-# Bounds mode: "worstcase" = published PilotDB behavior (chi^2-inflated std upper
-# bound, t lower bound on mean, Bernoulli worst-case population size).
-# "plugin" = our Fix 1: size the sample from the pilot's measured statistics
-# directly (CLT plug-in estimates). Select with env var PILOTDB_BOUNDS=plugin.
+# Our Fix: we set the default bounds mode to "worstcase" to match the published PilotDB behavior, but it can be overridden by setting the environment variable PILOTDB_BOUNDS to "plugin" to access our fixes.
 BOUNDS_MODE = os.environ.get("PILOTDB_BOUNDS", "worstcase").lower()
 
 import pandas as pd
@@ -97,7 +94,7 @@ def get_mean_sample_size(
     pilot_sample_size,
 ):
     if BOUNDS_MODE == "plugin":
-        # Fix 1: CLT sizing with the pilot's measured mean and std, no inflation.
+        # Our Fix 1: CLT sizing with the pilot's measured mean and std, no inflation.
         z_val = norm.ppf(1 - fp / 2)
         return (z_val / error * pilot_sample_std / abs(pilot_sample_mean)) ** 2
     std_ub = get_std_ub(pilot_sample_size, pilot_sample_std, failure_probability=fp1)
@@ -118,9 +115,7 @@ def get_sample_rate(
     fp: float, sample_size: int, pilot_sample_rate: float, pilot_sample_size: int
 ):
     if BOUNDS_MODE == "plugin":
-        # Fix 1: plug-in population estimate N_hat = pilot pages / pilot rate,
-        # instead of the Bernoulli worst-case lower bound (whose assertion is
-        # the published code's "<n> is too big" fallback).
+        # Handler for our fix: plug-in population estimate N_hat = pilot pages / pilot rate, instead of the Bernoulli worst-case lower bound (whose assertion is the published code's "<n> is too big" fallback).
         n_hat = pilot_sample_size / pilot_sample_rate
         return min(1.0, sample_size / n_hat)
     if pilot_sample_rate > 0.9:
@@ -142,7 +137,7 @@ def get_bernoulli_N_sample_rate(
 ):
     z_val = norm.ppf(1 - fp / 2)
     if BOUNDS_MODE == "plugin":
-        # Fix 1: plug-in population estimate instead of the worst-case lower bound.
+        # Our Fix 2: plug-in population estimate instead of the worst-case lower bound.
         n_hat = pilot_sample_size / pilot_sample_rate
         return 1 / (1 + error**2 * n_hat / z_val**2)
     bernoulli_N_lb = get_bernoulli_N_lb(pilot_sample_size, pilot_sample_rate, fp1)

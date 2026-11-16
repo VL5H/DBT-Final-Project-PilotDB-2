@@ -29,9 +29,8 @@ def dump_results(result_file: str, results_df: pd.DataFrame):
 
 
 def get_largest_sample_rate(dbms: str) -> float:
-    # Fix: the published hardcoded ceiling (5% for Postgres) silently rejects
-    # feasible plans, e.g. TPC-H Q1 at SF10 needs 6.6% under measurement-based
-    # bounds. Overridable for experiments via env var PILOTDB_MAX_RATE.
+    #  Our Fix: the default max sample rate (5% for Postgres) silently rejects feasible plans if they are over this limit (i.e. TPC-H Q1).
+    # This can now be overridden for any tests that need it via env var PILOTDB_MAX_RATE.
     override = os.environ.get("PILOTDB_MAX_RATE")
     if override is not None:
         return float(override)
