@@ -12,7 +12,7 @@ os.makedirs("results/raw_plugin", exist_ok=True)
 rows = []
 
 for qid in QIDS:
-    for mode in ["aqp", "exact"]:
+    for mode in ["aqp"]:
         cmd = [sys.executable, "evaluate.py", "--benchmark", "tpch", "--qid", qid,
                "--dbms", "postgres", "--db_config_file", CONFIG,
                "--process_mode", mode, "--error", ERROR, "--failure_probability", PROB]
